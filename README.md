@@ -8,6 +8,6 @@
 ## Code
 - `main.R` includes all code relating to cleaning the data, model training and prediction, hypotheses tests, and plots.
 ## Description
-- This code identifies the most important tendencies of defensive backs in the NFL for predicting when they are going to blitz. The code contains hypotheses tests to compare means, a trained logistic regression model, confidence intervals for means, and two plots using real game data.
+- This code identifies the most important tendencies of defensive backs in the NFL for predicting when they are going to blitz. It then uses these tendencies in a logistic regression model to predict when defensive backs are going to blitz. The code contains hypotheses tests to compare means, a trained logistic regression model, confidence intervals for means, and two plots using real game data.
 ## Assumptions
 - In this model it is assumed that defensive setup, yards to go, and downs do not affect the pre-snap tendencies of players when they blitz.
