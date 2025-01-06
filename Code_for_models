@@ -1,0 +1,39 @@
+```{r}
+#reading all the data 
+player_play <- read.csv("~/Downloads/player_play.csv")
+games <- read.csv("~/Downloads/games.csv")
+play <- read.csv("~/Downloads/plays.csv")
+players <- read.csv("~/Downloads/players.csv")
+week1 <- read.csv("~/Downloads/tracking_week_1.csv")
+week2 <- read.csv("~/Downloads/tracking_week_2.csv")
+week3 <- read.csv("~/Downloads/tracking_week_3.csv")
+week4 <- read.csv("~/Downloads/tracking_week_4.csv")
+week5 <- read.csv("~/Downloads/tracking_week_5.csv")
+week6 <- read.csv("~/Downloads/tracking_week_6.csv")
+week7 <- read.csv("~/Downloads/tracking_week_7.csv")
+week8 <- read.csv("~/Downloads/tracking_week_8.csv")
+week9 <- read.csv("~/Downloads/tracking_week_9.csv")
+
+#results of the plays
+addmargins(table(play$passResult))
+
+#players who are rushing the qb
+rushers <- player_play %>%
+  filter(wasInitialPassRusher == 1) %>%
+  group_by(gameId, playId) %>%
+  summarise(num_rushers = n(), .groups = "drop")
+
+#plays where there are blitzes
+rushers_5 <- rushers %>% filter(num_rushers >= 5)
+
+#play data when there is a blitz
+detailed <- rushers_5 %>%
+  inner_join(play, by = c("gameId", "playId"))
+
+#player play data when there is a blitz
+player_play_blitz <- rushers_5 %>%
+  inner_join(player_play, by = c("gameId", "playId"))
+player_play_blitz <- players_pos %>%
+  inner_join(player_play_blitz, by = c("nflId"))
+```
+
