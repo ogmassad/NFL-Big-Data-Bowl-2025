@@ -1,18 +1,19 @@
 ```{r}
 #reading all the data 
-player_play <- read.csv("~/Downloads/player_play.csv")
-games <- read.csv("~/Downloads/games.csv")
-play <- read.csv("~/Downloads/plays.csv")
-players <- read.csv("~/Downloads/players.csv")
-week1 <- read.csv("~/Downloads/tracking_week_1.csv")
-week2 <- read.csv("~/Downloads/tracking_week_2.csv")
-week3 <- read.csv("~/Downloads/tracking_week_3.csv")
-week4 <- read.csv("~/Downloads/tracking_week_4.csv")
-week5 <- read.csv("~/Downloads/tracking_week_5.csv")
-week6 <- read.csv("~/Downloads/tracking_week_6.csv")
-week7 <- read.csv("~/Downloads/tracking_week_7.csv")
-week8 <- read.csv("~/Downloads/tracking_week_8.csv")
-week9 <- read.csv("~/Downloads/tracking_week_9.csv")
+player_play <- read.csv("https://github.com/ogmassad/NFL-Big-Data-Bowl-2025/releases/download/NFL_BDB_Data/player_play.csv")
+games <- read.csv("https://github.com/ogmassad/NFL-Big-Data-Bowl-2025/releases/download/NFL_BDB_Data/games.csv")
+play <- read.csv("https://github.com/ogmassad/NFL-Big-Data-Bowl-2025/releases/download/NFL_BDB_Data/plays.csv")
+players <- read.csv("https://github.com/ogmassad/NFL-Big-Data-Bowl-2025/releases/download/NFL_BDB_Data/players.csv")
+week1 <- read.csv("https://github.com/ogmassad/NFL-Big-Data-Bowl-2025/releases/download/NFL_BDB_Data/tracking_week_1.csv")
+week2 <- read.csv("https://github.com/ogmassad/NFL-Big-Data-Bowl-2025/releases/download/NFL_BDB_Data/tracking_week_2.csv
+")
+week3 <- read.csv("https://github.com/ogmassad/NFL-Big-Data-Bowl-2025/releases/download/NFL_BDB_Data/tracking_week_3.csv")
+week4 <- read.csv("https://github.com/ogmassad/NFL-Big-Data-Bowl-2025/releases/download/NFL_BDB_Data/tracking_week_4.csv")
+week5 <- read.csv("https://github.com/ogmassad/NFL-Big-Data-Bowl-2025/releases/download/NFL_BDB_Data/tracking_week_5.csv")
+week6 <- read.csv("https://github.com/ogmassad/NFL-Big-Data-Bowl-2025/releases/download/NFL_BDB_Data/tracking_week_6.csv")
+week7 <- read.csv("https://github.com/ogmassad/NFL-Big-Data-Bowl-2025/releases/download/NFL_BDB_Data/tracking_week_7.csv")
+week8 <- read.csv("https://github.com/ogmassad/NFL-Big-Data-Bowl-2025/releases/download/NFL_BDB_Data/tracking_week_8.csv")
+week9 <- read.csv("https://github.com/ogmassad/NFL-Big-Data-Bowl-2025/releases/download/NFL_BDB_Data/tracking_week_9.csv")
 
 #results of the plays
 addmargins(table(play$passResult))
@@ -37,3 +38,43 @@ player_play_blitz <- players_pos %>%
   inner_join(player_play_blitz, by = c("nflId"))
 ```
 
+```{r}
+#subsetting blitz plays for those with rushers from the secondary
+#secondary players 
+secondary <- c("CB", "FS", "SS")
+
+#blitzers
+player_play_blitzers <-subset(player_play_blitz, wasInitialPassRusher == 1)
+
+# Filter for blitz plays with secondary rushers
+plays_with_secondary_rusher <- player_play_blitzers %>%
+  filter(position %in% secondary) %>%
+  dplyr::select(gameId, playId) %>%
+  distinct()
+
+#play data with secondary rusher
+plays_second <- plays_with_secondary_rusher %>%
+  inner_join(play, by = c("gameId", "playId"))
+
+#player_play data with secondary rusher
+player_play_second <- plays_with_secondary_rusher %>%
+  inner_join(player_play, by = c("gameId", "playId"))
+
+plays_second <- subset(plays_second, passResult != '')
+#results of blitz plays with secondary rushers
+table_second <- table(plays_second$passResult)
+
+
+
+#subsetting blitz plays for those that don't have rushers from the secondary
+# Rows not included in the subset (no secondary rusher)
+plays_without_secondary_rusher <- detailed %>%
+  anti_join(plays_with_secondary_rusher, by = c("gameId", "playId"))
+
+#player_play data without secondary rusher
+player_play_nosecond <- plays_without_secondary_rusher %>%
+  inner_join(player_play, by = c("gameId", "playId"))
+
+
+plays_without_secondary_rusher <- subset(plays_without_secondary_rusher, passResult != '')
+```
